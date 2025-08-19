@@ -9,6 +9,7 @@ from sqlalchemy.orm import Session
 from app.schemas.survey import SurveyGenerateRequest
 from app.services.openai_service import OpenAIService
 from app.services.survey_storage_service import SurveyStorageService
+from app.config import settings
 
 
 class SurveyGenerationService:
@@ -47,7 +48,7 @@ class SurveyGenerationService:
                 db=db,
                 request=request,
                 generated_data=survey_data,
-                openai_model="gpt-3.5-turbo"
+                openai_model=settings.LLM_MODEL
             )
             print(f"💾 Survey saved to database: {request.title}")
         except Exception as e:

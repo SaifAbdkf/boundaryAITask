@@ -60,13 +60,13 @@ class OpenAIService:
         
         try:
             response = self.client.chat.completions.create(
-                model="gpt-3.5-turbo",
+                model=settings.LLM_MODEL,
                 messages=[
                     {"role": "system", "content": "You are a survey creation assistant. Always respond with valid JSON only."},
                     {"role": "user", "content": prompt}
                 ],
-                temperature=0.7,
-                max_tokens=1500
+                temperature=settings.LLM_TEMPERATURE,
+                max_tokens=settings.LLM_MAX_TOKENS
             )
             
             ai_response = response.choices[0].message.content
