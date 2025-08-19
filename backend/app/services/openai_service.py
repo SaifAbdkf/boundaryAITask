@@ -113,10 +113,36 @@ Generate a JSON response with exactly this structure:
                 {{"id": "opt1", "text": "Option 1"}},
                 {{"id": "opt2", "text": "Option 2"}}
             ]
-        }}
+        }},
+        {{
+            "id": "q3",
+            "type": "singleChoice",
+            "title": "Question text here",
+            "saved": true,
+            "options": [
+                {{"id": "opt1", "text": "Option 1"}},
+                {{"id": "opt2", "text": "Option 2"}}
+            ]
+        }},
+        {{
+            "id": "q4",
+            "type": "openQuestion",
+            "title": "Question text here",
+            "saved": true,
+            "options": []
+        }},
+         {{
+            "id": "q3",
+            "type": "scale",
+            "title": "Question text here",
+            "saved": true,
+            "options": []
+        }},
     ]
 }}
 
 Valid question types are: shortAnswer, multipleChoice, singleChoice, openQuestion, scale
-Include 3-5 relevant questions. For choice questions, provide appropriate options.
+Include 5-7 relevant questions with variety between the types. For choice questions, provide 
+appropriate options. the question should match the type of question, for example if a question 
+is better answered with one option, it should be a singleChoice question.
 Return only valid JSON, no other text."""
