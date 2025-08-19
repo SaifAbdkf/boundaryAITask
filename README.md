@@ -1,4 +1,4 @@
-# 🪄 AI-Powered Survey Generator for BoundaryAI Backend Task
+# 🪄 AI-Powered Survey Generator
 
 A full-stack application that transforms user descriptions into structured surveys using OpenAI's API
 
@@ -90,11 +90,13 @@ uvicorn main:app --reload --port 8000
 - Convert text to high-dimensional vectors that capture meaning using OpenAI Embeddings
 - Compare vectors using cosine similarity
 - Threshold-based matching (e.g., >85% similarity)
+
   **Pros:**
-- ✅ Captures semantic meaning
-- ✅ Handles synonyms and paraphrasing
-- ✅ Language-aware
-- ✅ Robust to typos and formatting
+
+- Captures semantic meaning
+- Handles synonyms and paraphrasing
+- Language-aware
+- Robust to typos and formatting
 
 #### 1. **Enterprise-Grade Architecture**
 
