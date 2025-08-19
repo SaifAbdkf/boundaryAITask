@@ -4,7 +4,7 @@ Service for managing survey storage and retrieval.
 
 from typing import Optional, Dict, Any
 from sqlalchemy.orm import Session
-from app.models.generated_survey import GeneratedSurvey
+from app.database.models.generated_survey import GeneratedSurvey
 from app.schemas.survey import SurveyGenerateRequest
 
 class SurveyStorageService:

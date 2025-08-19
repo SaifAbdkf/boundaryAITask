@@ -5,7 +5,7 @@ Database connection and session management.
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker, Session
 from app.config import settings
-from app.models.generated_survey import Base
+from app.database.models.generated_survey import Base
 
 # Database engine
 engine = None

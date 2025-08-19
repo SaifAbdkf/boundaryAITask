@@ -6,28 +6,21 @@ from fastapi import APIRouter, HTTPException, Depends
 from sqlalchemy.orm import Session
 
 from app.schemas.survey import SurveyGenerateRequest
-from app.services.openai_service import OpenAIService
+from app.services.survey_generation_service import SurveyGenerationService
 from app.database import get_db
 
 router = APIRouter(prefix="/api/surveys", tags=["surveys"])
 
-# Initialize OpenAI service
-openai_service = OpenAIService()
+# Initialize survey generation service
+survey_generation_service = SurveyGenerationService()
 
 @router.post("/generate")
 def generate_survey(request: SurveyGenerateRequest, db: Session = Depends(get_db)):
     """Generate a survey based on title and description using OpenAI with caching."""
     
-    # Check if OpenAI is configured
-    if not openai_service.is_available():
-        raise HTTPException(
-            status_code=500, 
-            detail="OpenAI API key not configured"
-        )
-    
     try:
         # Generate survey with storage integration
-        survey_data, is_cached = openai_service.generate_survey_with_storage(request, db)
+        survey_data, is_cached = survey_generation_service.generate_survey(request, db)
         
         # Add metadata about whether this was cached
         response_data = {

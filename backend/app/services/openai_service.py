@@ -3,14 +3,12 @@ OpenAI integration service.
 """
 
 import json
-from typing import Optional, Dict, Any, Tuple
+from typing import Optional, Dict, Any
 from openai import OpenAI
 import httpx
 
 from app.config import settings
 from app.schemas.survey import SurveyGenerateRequest
-from app.services.survey_storage_service import SurveyStorageService
-from sqlalchemy.orm import Session
 
 class OpenAIService:
     """Service for handling OpenAI API interactions."""
@@ -89,43 +87,6 @@ class OpenAIService:
         except Exception as e:
             raise Exception(f"Error calling OpenAI API: {str(e)}")
     
-    def generate_survey_with_storage(
-        self, 
-        request: SurveyGenerateRequest, 
-        db: Session
-    ) -> Tuple[Dict[str, Any], bool]:
-        """
-        Generate a survey with storage integration.
-        Returns (survey_data, is_cached)
-        """
-        
-        # First, check if we already have this survey
-        existing_survey = SurveyStorageService.find_existing_survey(
-            db, request.title, request.description
-        )
-        
-        if existing_survey:
-            print(f"📋 Found cached survey for: {request.title}")
-            return existing_survey.generated_data, True
-        
-        # Generate new survey
-        print(f"🤖 Generating new survey for: {request.title}")
-        survey_data = self.generate_survey(request)
-        
-        # Save to database
-        try:
-            SurveyStorageService.save_generated_survey(
-                db=db,
-                request=request,
-                generated_data=survey_data,
-                openai_model="gpt-3.5-turbo"
-            )
-            print(f"💾 Survey saved to database: {request.title}")
-        except Exception as e:
-            print(f"⚠️ Failed to save survey to database: {e}")
-            # Continue even if saving fails
-        
-        return survey_data, False
     
     def _create_survey_prompt(self, request: SurveyGenerateRequest) -> str:
         """Create the prompt for OpenAI survey generation."""
