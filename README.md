@@ -1,8 +1,8 @@
-# 🎯 AI-Powered Survey Generator
+# 🪄 AI-Powered Survey Generator for BoundaryAI Backend Task
 
-A full-stack application that transforms user descriptions into structured surveys using OpenAI's API, featuring intelligent caching, rate limiting, and a modern React frontend.
+A full-stack application that transforms user descriptions into structured surveys using OpenAI's API
 
-## 🏗️ Tech Stack & Architecture
+## Tech Stack & Architecture
 
 - **FastAPI** (Python 3.11)
 - **PostgreSQL** with SQLAlchemy ORM
@@ -19,7 +19,7 @@ A full-stack application that transforms user descriptions into structured surve
 | **Type Safety**       | Built-in with Pydantic                | Requires additional libraries |
 | **Data Validation**   | Automatic request/response validation | Manual validation             |
 
-**Decision**: FastAPI provides superior developer experience, automatic documentation, and better performance for API-heavy applications. I did not know anything about FastAPI before this project and I managed to build a complete working project.
+FastAPI provides superior developer experience, automatic documentation, and better performance for API-heavy applications. I did not know anything about FastAPI before this project and I managed to build a complete working project.
 
 ### Key Library Choices
 
@@ -67,8 +67,6 @@ A full-stack application that transforms user descriptions into structured surve
 
 ### Manual Setup (Development)
 
-#### Backend Setup
-
 ```bash
 cd backend
 python -m venv venv
@@ -82,19 +80,11 @@ createdb survey_generator
 uvicorn main:app --reload --port 8000
 ```
 
-#### Frontend Setup
-
-```bash
-cd frontend
-npm install
-npm start
-```
-
 ## 🎯 Areas of Focus & Advanced Features
 
-### 🔥 What Sets This Implementation Apart
+### What Sets This Implementation Apart
 
-#### 0. (future feature). **Semantic Embeddings to survey generation requests**
+#### 0. (future feature) **Semantic Embeddings to survey generation requests**
 
 - Exact matching is too rigid. Users often phrase the same intent differently. We could take an approach to test for similarity between the current survey generation request and the previous ones.
 - Convert text to high-dimensional vectors that capture meaning using OpenAI Embeddings
@@ -130,11 +120,13 @@ npm start
 
 - **Configurable Models**: Easy switching between GPT-3.5, GPT-4, etc.
 - **Prompt Engineering**: Structured prompts for consistent survey generation
-- **Error Recovery**: Robust handling of API failures and timeouts
 
 #### 6. **Frontend UX improvement**
 
-- gradient background color for the generate Survey button to give a feel of magic AI
+- Created a button with gradient background color for the generate Survey button to give a feel of a magical AI
+- Inverted the length constraint between the title and description of the survey
+- Removed the left sidebar because it was useless
+- Implemented a toast feature to inform the user of successes and failures
 
 #### 7. **DevOps & Deployment**
 
@@ -160,13 +152,8 @@ npm start
 
 ## Environment Variables
 
-| Variable                                | Description                   | Default                    |
-| --------------------------------------- | ----------------------------- | -------------------------- |
-| `OPENAI_API_KEY`                        | OpenAI API key                | Required                   |
-| `DATABASE_URL`                          | PostgreSQL connection string  | Auto-configured for Docker |
-| `LLM_MODEL`                             | OpenAI model to use           | `gpt-3.5-turbo`            |
-| `LLM_TEMPERATURE`                       | Response creativity (0.0-1.0) | `0.7`                      |
-| `LLM_MAX_TOKENS`                        | Maximum response length       | `1500`                     |
-| `RATE_LIMIT_ENABLED`                    | Enable rate limiting          | `true`                     |
-| `RATE_LIMIT_REQUESTS_PER_MINUTE`        | Requests per minute limit     | `10`                       |
-| `RATE_LIMIT_SURVEY_GENERATION_PER_HOUR` | Survey generation limit       | `20`                       |
+| Variable          | Description                   | Default  |
+| ----------------- | ----------------------------- | -------- |
+| `OPENAI_API_KEY`  | OpenAI API key                | Required |
+| `LLM_MODEL`       | OpenAI model to use           | `gpt-4`  |
+| `LLM_TEMPERATURE` | Response creativity (0.0-1.0) | `0.7`    |
