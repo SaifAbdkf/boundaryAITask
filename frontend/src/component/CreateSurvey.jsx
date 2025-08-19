@@ -5,6 +5,7 @@ import QuestionList from "./QuestionList";
 import { motion } from "framer-motion";
 import { FaMagic } from "react-icons/fa";
 import ApiService from "../services/apiService";
+import Toast from "./Toast";
 
 const CreateSurvey = () => {
   const {
@@ -15,6 +16,7 @@ const CreateSurvey = () => {
     surveyTitle,
     surveyDescription,
     addNewQuestion,
+    setQuestions,
   } = useCreateSurveyProvider();
 
   const [titleLength, setTitleLength] = useState(0);
@@ -48,10 +50,8 @@ const CreateSurvey = () => {
       });
 
       console.log("Generated survey:", generatedSurvey);
-
-      setGenerationSuccess(
-        "Survey generated successfully! Check the console for details."
-      );
+      setQuestions(generatedSurvey.questions);
+      setGenerationSuccess("Survey generated successfully!");
 
       // TODO: Handle the generated survey data
       // This will be implemented when we connect it to the survey provider
@@ -180,28 +180,21 @@ const CreateSurvey = () => {
         </motion.button>
       </motion.div>
 
-      {/* Success Display */}
+      {/* Toast Notifications */}
       {generationSuccess && (
-        <motion.div
-          initial={{ opacity: 0, y: -10 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="bg-green-50 border border-green-200 rounded-lg p-3 text-green-700 text-sm"
-        >
-          <p className="font-medium">Success:</p>
-          <p>{generationSuccess}</p>
-        </motion.div>
+        <Toast
+          message={generationSuccess}
+          type="success"
+          onClose={() => setGenerationSuccess("")}
+        />
       )}
 
-      {/* Error Display */}
       {generationError && (
-        <motion.div
-          initial={{ opacity: 0, y: -10 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="bg-red-50 border border-red-200 rounded-lg p-3 text-red-700 text-sm"
-        >
-          <p className="font-medium">Error:</p>
-          <p>{generationError}</p>
-        </motion.div>
+        <Toast
+          message={generationError}
+          type="error"
+          onClose={() => setGenerationError("")}
+        />
       )}
     </div>
   );
