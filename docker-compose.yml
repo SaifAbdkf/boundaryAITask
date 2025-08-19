@@ -1,0 +1,54 @@
+# "services" means "containers I want to run"
+# Note: version is no longer needed in modern Docker Compose
+services:
+  # This creates a PostgreSQL database container
+  database:
+    # Use the official PostgreSQL image (pre-built container)
+    image: postgres:15
+
+    # Give the container a friendly name
+    container_name: survey-database
+
+    # Environment variables (like .env file but for the container)
+    environment:
+      POSTGRES_DB: survey_generator # Create this database
+      POSTGRES_USER: survey_user # Create this user
+      POSTGRES_PASSWORD: survey_password # Set this password
+
+    # Map port 5432 inside container to port 5432 on your computer
+    # Format: "your_computer_port:container_port"
+    ports:
+      - "5432:5432"
+
+    # Store database data in a "volume" so it doesn't disappear when container stops
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  # This creates your backend API container
+  backend:
+    # Instead of using a pre-built image, build from our Dockerfile
+    build: ./backend
+
+    # Give it a friendly name
+    container_name: survey-backend
+
+    # Use the backend/.env file directly (your logical organization!)
+    env_file:
+      - ./backend/.env
+
+    # Override specific variables for Docker
+    environment:
+      # Override database URL to use container name instead of localhost
+      DATABASE_URL: postgresql://survey_user:survey_password@database:5432/survey_generator
+
+    # Map port 8000 inside container to port 8000 on your computer
+    ports:
+      - "8000:8000"
+
+    # Wait for database to be ready before starting backend
+    depends_on:
+      - database
+
+# Define the volume for database data storage
+volumes:
+  postgres_data:

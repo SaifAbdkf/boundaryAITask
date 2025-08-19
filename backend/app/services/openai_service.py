@@ -144,5 +144,5 @@ Generate a JSON response with exactly this structure:
 Valid question types are: shortAnswer, multipleChoice, singleChoice, openQuestion, scale
 Include 5-7 relevant questions with variety between the types. For choice questions, provide 
 appropriate options. the question should match the type of question, for example if a question 
-is better answered with one option, it should be a singleChoice question.
+is better answered with one option, it should be a singleChoice question. The goal is to create a survey that improves the service of the company.
 Return only valid JSON, no other text."""

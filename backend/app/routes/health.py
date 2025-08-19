@@ -4,6 +4,7 @@ Health check routes.
 
 from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
+from sqlalchemy import text
 
 from app.config import settings
 from app.schemas.survey import HealthResponse
@@ -20,8 +21,8 @@ def read_root():
 def health_check(db: Session = Depends(get_db)):
     """Health check endpoint."""
     try:
-        # Test database connection
-        db.execute("SELECT 1")
+        # Test database connection using proper SQLAlchemy syntax
+        db.execute(text("SELECT 1"))
         db_status = "connected"
     except Exception as e:
         db_status = f"error: {str(e)}"
