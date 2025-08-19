@@ -1,10 +1,10 @@
-import React, { createContext, useContext, useState, useRef, useCallback } from "react";
+import React, { createContext, useContext, useState, useCallback } from "react";
 
 const CreateSurveyContext = createContext();
 
 export const CreateSurveyProviderMock = ({ children }) => {
-  const [surveyTitle, setSurveyTitle] = useState("My Survey Title");
-  const [surveyDescription, setSurveyDescription] = useState("This is a sample survey.");
+  const [surveyTitle, setSurveyTitle] = useState("");
+  const [surveyDescription, setSurveyDescription] = useState("");
   const [questions, setQuestions] = useState([]);
   const [dupList, setDupList] = useState([]);
   const [isAddingOption, setIsAddingOption] = useState(false);
@@ -16,10 +16,13 @@ export const CreateSurveyProviderMock = ({ children }) => {
       type,
       title: "",
       saved: false,
-      options: type === "multipleChoice" || type === "singleChoice" ? [
-        { id: Date.now() + Math.random(), text: "" },
-        { id: Date.now() + Math.random() + 1, text: "" }
-      ] : []
+      options:
+        type === "multipleChoice" || type === "singleChoice"
+          ? [
+              { id: Date.now() + Math.random(), text: "" },
+              { id: Date.now() + Math.random() + 1, text: "" },
+            ]
+          : [],
     };
     setQuestions((prev) => [...prev, newQuestion]);
   };
@@ -28,37 +31,40 @@ export const CreateSurveyProviderMock = ({ children }) => {
     setQuestions((prev) => prev.filter((_, i) => i !== index));
   };
 
-  const handleAddOption = useCallback((questionIndex) => {
-    if (isAddingOption) {
-      console.log('Already adding option, skipping...');
-      return;
-    }
-    
-    setIsAddingOption(true);
-    console.log('handleAddOption called for question:', questionIndex);
-    
-    setQuestions((prev) => {
-      console.log('Previous questions:', prev);
-      const newQuestions = [...prev];
-      if (!newQuestions[questionIndex].options) {
-        newQuestions[questionIndex].options = [];
+  const handleAddOption = useCallback(
+    (questionIndex) => {
+      if (isAddingOption) {
+        console.log("Already adding option, skipping...");
+        return;
       }
-      const newOption = {
-        id: Date.now() + Math.random(),
-        text: "",
-      };
-      console.log('Adding new option:', newOption);
-      newQuestions[questionIndex].options.push(newOption);
-      console.log('New questions after adding option:', newQuestions);
-      
-      // Reset the flag after the state update
-      setTimeout(() => {
-        setIsAddingOption(false);
-      }, 0);
-      
-      return newQuestions;
-    });
-  }, [isAddingOption]);
+
+      setIsAddingOption(true);
+      console.log("handleAddOption called for question:", questionIndex);
+
+      setQuestions((prev) => {
+        console.log("Previous questions:", prev);
+        const newQuestions = [...prev];
+        if (!newQuestions[questionIndex].options) {
+          newQuestions[questionIndex].options = [];
+        }
+        const newOption = {
+          id: Date.now() + Math.random(),
+          text: "",
+        };
+        console.log("Adding new option:", newOption);
+        newQuestions[questionIndex].options.push(newOption);
+        console.log("New questions after adding option:", newQuestions);
+
+        // Reset the flag after the state update
+        setTimeout(() => {
+          setIsAddingOption(false);
+        }, 0);
+
+        return newQuestions;
+      });
+    },
+    [isAddingOption]
+  );
 
   const handleTitleChange = (questionIndex, title) => {
     setQuestions((prev) => {
@@ -72,20 +78,23 @@ export const CreateSurveyProviderMock = ({ children }) => {
     setQuestions((prev) => {
       const newQuestions = [...prev];
       newQuestions[questionIndex].type = type;
-      
+
       // Ensure multiple choice and single choice questions have at least 2 empty options
       if (type === "multipleChoice" || type === "singleChoice") {
-        if (!newQuestions[questionIndex].options || newQuestions[questionIndex].options.length < 2) {
+        if (
+          !newQuestions[questionIndex].options ||
+          newQuestions[questionIndex].options.length < 2
+        ) {
           newQuestions[questionIndex].options = [
             { id: Date.now() + Math.random(), text: "" },
-            { id: Date.now() + Math.random() + 1, text: "" }
+            { id: Date.now() + Math.random() + 1, text: "" },
           ];
         }
       } else {
         // Clear options for non-choice questions
         newQuestions[questionIndex].options = [];
       }
-      
+
       return newQuestions;
     });
   };
@@ -130,7 +139,9 @@ export const CreateSurveyProviderMock = ({ children }) => {
     setQuestions((prev) => {
       const newQuestions = [...prev];
       if (newQuestions[questionIndex].options) {
-        const optionIndex = newQuestions[questionIndex].options.findIndex(option => option.id === optionId);
+        const optionIndex = newQuestions[questionIndex].options.findIndex(
+          (option) => option.id === optionId
+        );
         if (optionIndex !== -1) {
           newQuestions[questionIndex].options.splice(optionIndex, 1);
         }
