@@ -7,7 +7,7 @@ const CreateSurveyPage = ({ surveySeriesId = "defaultId" }) => {
   return (
     <DashboardLayout>
       <div className="flex flex-col w-full h-full overflow-hidden">
-        <div className="lg:min-h-[90px]">
+        <div className="lg:min-h-[90px] border-b-2 border-[#6851a7]">
           <Header>
             <h2 className="text-[26px] font-switzerMedium text-primary">
               Create a New Survey

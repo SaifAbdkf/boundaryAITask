@@ -42,3 +42,4 @@ class HealthResponse(BaseModel):
     """Response model for health check."""
     status: str
     openai_configured: bool
+    database_status: str

@@ -6,6 +6,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from app.routes import health_router, surveys_router
+from app.database import init_database
 
 def create_app() -> FastAPI:
     """Create and configure the FastAPI application."""
@@ -28,6 +29,9 @@ def create_app() -> FastAPI:
     # Include routers
     app.include_router(health_router)
     app.include_router(surveys_router)
+    
+    # Initialize database
+    init_database()
     
     return app
 

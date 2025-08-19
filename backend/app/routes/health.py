@@ -2,10 +2,12 @@
 Health check routes.
 """
 
-from fastapi import APIRouter
+from fastapi import APIRouter, Depends
+from sqlalchemy.orm import Session
 
 from app.config import settings
 from app.schemas.survey import HealthResponse
+from app.database import get_db
 
 router = APIRouter(tags=["health"])
 
@@ -15,9 +17,17 @@ def read_root():
     return {"message": "Hello World! Survey Generator API is running"}
 
 @router.get("/health", response_model=HealthResponse)
-def health_check():
+def health_check(db: Session = Depends(get_db)):
     """Health check endpoint."""
+    try:
+        # Test database connection
+        db.execute("SELECT 1")
+        db_status = "connected"
+    except Exception as e:
+        db_status = f"error: {str(e)}"
+    
     return HealthResponse(
         status="healthy",
-        openai_configured=settings.is_openai_configured
+        openai_configured=settings.is_openai_configured,
+        database_status=db_status
     )
