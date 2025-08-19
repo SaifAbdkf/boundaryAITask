@@ -1,82 +1,172 @@
-# Backend Task
+# 🎯 AI-Powered Survey Generator
 
-This task is designed to evaluate your backend skills, API design, code quality, architecture, and creativity. The goal is to augment the provided isolated frontend page with a fully working survey-generation feature.
+A full-stack application that transforms user descriptions into structured surveys using OpenAI's API, featuring intelligent caching, rate limiting, and a modern React frontend.
 
-To do so you are asked to create an AI-powered survey generator that transforms a user’s brief description into a fully structured questionnaire, covering diverse question types (multiple-choice, ratings, open-text, etc.) tailored to their needs.
+## 🏗️ Tech Stack & Architecture
 
-## Description
+- **FastAPI** (Python 3.11)
+- **PostgreSQL** with SQLAlchemy ORM
+- **OpenAI API** for survey generation
+- **Docker** for containerization
+- **Pydantic** for data validation
 
-You have been given an isolated version of one page of our frontend (React + TypeScript): [https://github.com/BoundaryAIRecruitment/BackendTask](https://github.com/BoundaryAIRecruitment/BackendTask)
+### Why FastAPI over Flask?
 
-Your job is to:
+| Feature               | FastAPI                               | Flask                         |
+| --------------------- | ------------------------------------- | ----------------------------- |
+| **Performance**       | 2-3x faster (async support)           | Synchronous by default        |
+| **API Documentation** | Auto-generated (Swagger/OpenAPI)      | Manual setup required         |
+| **Type Safety**       | Built-in with Pydantic                | Requires additional libraries |
+| **Data Validation**   | Automatic request/response validation | Manual validation             |
 
-* **Add a “Generate Survey” button to the page:**
+**Decision**: FastAPI provides superior developer experience, automatic documentation, and better performance for API-heavy applications. I did not know anything about FastAPI before this project and I managed to build a complete working project.
 
-  * When clicked, it should prompt the user to enter a short survey description (e.g. “Customer satisfaction for an online store”).
-  * Once submitted, the frontend should call your new backend endpoint.
+### Key Library Choices
 
-* **Implement the backend (using Flask or FastAPI, your choice):**
+- **SQLAlchemy 2.0**: Modern ORM with async support and type safety
+- **Pydantic**: Robust data validation and serialization
+- **psycopg2-binary**: High-performance PostgreSQL adapter
+- **python-dotenv**: Secure environment variable management
 
-  * **Route(s):**
+## 🚀 Setup & Installation
 
-    * A POST endpoint (e.g. `/api/surveys/generate`) that accepts the user’s description.
-  * **Logic & Integration:**
+### Prerequisites
 
-    * Use the OpenAI API (key provided), or another LLM of your choice to generate a structured survey.
-    * It is recommended that the output be JSON-structured (e.g. `{ "title": "...", "questions": [ { "type": "...", "text": "..." }, … ] }`).
-  * **Storage:** save generated surveys for repeated prompts.
+- Python 3.11+
+- Node.js 18+
+- Docker & Docker Compose
+- OpenAI API Key
 
-    * Save the input and output in a PostGreSQL database; if an input is the same, you should fetch it instead of generate it.
-  * **Auto-fill:**
+### Quick Start (Docker - Recommended)
 
-    * Return the generated JSON so the frontend can render the new survey form automatically.
+1. **Clone and navigate to project**
 
-## Tech Stack
+   ```bash
+   git clone <repository-url>
+   cd boundaryAITask
+   ```
 
-* **Language:** Python (3.11)
-* **Framework:** Flask or FastAPI
-* **AI Integration:** OpenAI API (or equivalent LLM)
+2. **Set up environment variables**
 
-## What We are Evaluating
+   ```bash
+   # Edit backend/.env with your OpenAI API key
+   cp backend/.env.example backend/.env
+   # Add your OpenAI API key to backend/.env
+   ```
 
-* **Architecture & Design**
+3. **Start with Docker**
 
-  * Logical separation of concerns (routes, services, models), clear dependency injection or config management.
-* **Code Quality**
+   ```bash
+   docker-compose up --build
+   ```
 
-  * Clean, modular, well-documented code following best practices and style guides.
-* **API Design**
+4. **Access the application**
+   - Backend API: http://localhost:8000
+   - API Documentation: http://localhost:8000/docs
+   - Frontend: http://localhost:3000
 
-  * RESTful principles, clear request/response schemas, proper status codes and error messages.
-* **Integration & Robustness**
+### Manual Setup (Development)
 
-  * Correct handling of API keys, timeouts, retries, input validation, and error cases.
-* **Performance & Security**
+#### Backend Setup
 
-  * Efficient request handling, minimal cold-start overhead, sanitization of inputs.
-* **Documentation**
+```bash
+cd backend
+python -m venv venv
+source venv/bin/activate  # On Windows: venv\Scripts\activate
+pip install -r requirements.txt
 
-  * Clear README explaining setup, env vars, how to run, and any design decisions.
+# Set up PostgreSQL database
+createdb survey_generator
 
-## Submission
+# Start the server
+uvicorn main:app --reload --port 8000
+```
 
-Provide one of the following:
+#### Frontend Setup
 
-* A GitHub repository (with public or private access) or a ZIP archive containing your code.
-* (Optional) A deployed version of your backend (e.g. on Heroku, Vercel Functions, or similar) with URL.
+```bash
+cd frontend
+npm install
+npm start
+```
 
-Include a brief README that covers:
+## 🎯 Areas of Focus & Advanced Features
 
-* Tech choices (why Flask vs. FastAPI, any libraries you picked)
-* Setup & Run instructions (install, env vars, start server)
-* Areas of focus (What did you implement that other candidates might not have?)
+### 🔥 What Sets This Implementation Apart
 
-## Bonus Points
+#### 0. (future feature). **Semantic Embeddings to survey generation requests**
 
-* **Dockerization:** supply a Dockerfile and easy docker-compose setup.
-* **Testing:** Unit and/or integration tests covering core functionality.
-* **Authentication:** simple token check on your API.
-* **Rate limiting:** prevent abuse of the generation endpoint.
-* **Security:**
+- Exact matching is too rigid. Users often phrase the same intent differently. We could take an approach to test for similarity between the current survey generation request and the previous ones.
+- Convert text to high-dimensional vectors that capture meaning using OpenAI Embeddings
+- Compare vectors using cosine similarity
+- Threshold-based matching (e.g., >85% similarity)
+  **Pros:**
+- ✅ Captures semantic meaning
+- ✅ Handles synonyms and paraphrasing
+- ✅ Language-aware
+- ✅ Robust to typos and formatting
 
-Feel free to innovate beyond the spec. If you see an opportunity to improve UX or backend architecture, show us. Good luck!
+#### 1. **Enterprise-Grade Architecture**
+
+- **Modular Design**: Clean separation between routes, services, models, and config
+- **Dependency Injection**: FastAPI's built-in DI system for database sessions
+- **Service Layer Pattern**: Business logic separated from API endpoints
+- **Repository Pattern**: Database operations abstracted through services
+
+#### 2. **Advanced Database Integration**
+
+- **Intelligent Caching**: SHA-256 hashing to prevent duplicate AI generations
+- **Connection Pooling**: Optimized database connections with SQLAlchemy
+- **Data Persistence**: PostgreSQL with proper indexing and constraints
+
+#### 4. **API Design Excellence**
+
+- **RESTful Endpoints**: Intuitive URL structure and HTTP methods
+- **Auto-Generated Documentation**: Interactive Swagger UI at `/docs`
+- **Response Metadata**: Cache hit information and generation timestamps
+- **Health Monitoring**: Comprehensive health checks for all services
+
+#### 5. **Advanced OpenAI Integration**
+
+- **Configurable Models**: Easy switching between GPT-3.5, GPT-4, etc.
+- **Prompt Engineering**: Structured prompts for consistent survey generation
+- **Error Recovery**: Robust handling of API failures and timeouts
+
+#### 6. **Frontend UX improvement**
+
+- gradient background color for the generate Survey button to give a feel of magic AI
+
+#### 7. **DevOps & Deployment**
+
+- **Docker Containerization**: Multi-stage builds for optimization
+- **Docker Compose**: One-command local development environment
+- **Health Checks**: Container-level health monitoring
+
+#### 8. **Code Quality & Maintainability**
+
+- **Type Safety**: Full Python type annotations
+- **Code Organization**: Clear folder structure and naming conventions
+- **Documentation**: Comprehensive docstrings and comments
+- **Configuration Management**: Centralized settings with validation
+
+## API Endpoints
+
+| Method | Endpoint                | Description                      |
+| ------ | ----------------------- | -------------------------------- |
+| `GET`  | `/`                     | Root endpoint                    |
+| `GET`  | `/health`               | System health check              |
+| `POST` | `/api/surveys/generate` | Generate survey from description |
+| `GET`  | `/docs`                 | Interactive API documentation    |
+
+## Environment Variables
+
+| Variable                                | Description                   | Default                    |
+| --------------------------------------- | ----------------------------- | -------------------------- |
+| `OPENAI_API_KEY`                        | OpenAI API key                | Required                   |
+| `DATABASE_URL`                          | PostgreSQL connection string  | Auto-configured for Docker |
+| `LLM_MODEL`                             | OpenAI model to use           | `gpt-3.5-turbo`            |
+| `LLM_TEMPERATURE`                       | Response creativity (0.0-1.0) | `0.7`                      |
+| `LLM_MAX_TOKENS`                        | Maximum response length       | `1500`                     |
+| `RATE_LIMIT_ENABLED`                    | Enable rate limiting          | `true`                     |
+| `RATE_LIMIT_REQUESTS_PER_MINUTE`        | Requests per minute limit     | `10`                       |
+| `RATE_LIMIT_SURVEY_GENERATION_PER_HOUR` | Survey generation limit       | `20`                       |
